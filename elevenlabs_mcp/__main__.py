@@ -1,12 +1,11 @@
 import os
+import sys
 import json
 from pathlib import Path
-import sys
 from dotenv import load_dotenv
 import argparse
 
 load_dotenv()
-
 
 def get_claude_config_path() -> Path | None:
     """Get the Claude config directory based on platform."""
@@ -15,9 +14,7 @@ def get_claude_config_path() -> Path | None:
     elif sys.platform == "darwin":
         path = Path(Path.home(), "Library", "Application Support", "Claude")
     elif sys.platform.startswith("linux"):
-        path = Path(
-            os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"), "Claude"
-        )
+        path = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"), "Claude")
     else:
         return None
 
@@ -25,10 +22,8 @@ def get_claude_config_path() -> Path | None:
         return path
     return None
 
-
 def get_python_path():
     return sys.executable
-
 
 def generate_config(api_key: str | None = None):
     module_dir = Path(__file__).resolve().parent
@@ -58,7 +53,6 @@ def generate_config(api_key: str | None = None):
 
     return config
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -82,14 +76,17 @@ if __name__ == "__main__":
     if args.print:
         print(json.dumps(config, indent=2))
     else:
-        claude_path = args.config_path if args.config_path else get_claude_config_path()
-        if claude_path is None:
-            print(
-                "Could not find Claude config path automatically. Please specify it using --config-path argument. The argument should be an absolute path of the claude_desktop_config.json file."
-            )
-            sys.exit(1)
+        if os.getenv("DISABLE_CLAUDE") == "1":
+            print("DISABLE_CLAUDE is set. Skipping Claude config generation.")
+        else:
+            claude_path = args.config_path if args.config_path else get_claude_config_path()
+            if claude_path is None:
+                print(
+                    "Could not find Claude config path automatically. Please specify it using --config-path argument. The argument should be an absolute path of the claude_desktop_config.json file."
+                )
+                sys.exit(1)
 
-        claude_path.mkdir(parents=True, exist_ok=True)
-        print("Writing config to", claude_path / "claude_desktop_config.json")
-        with open(claude_path / "claude_desktop_config.json", "w") as f:
-            json.dump(config, f, indent=2)
+            claude_path.mkdir(parents=True, exist_ok=True)
+            print("Writing config to", claude_path / "claude_desktop_config.json")
+            with open(claude_path / "claude_desktop_config.json", "w") as f:
+                json.dump(config, f, indent=2)

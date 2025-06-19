@@ -8,7 +8,6 @@ authors = [
     { name = "Louis Jordan", email = "louis@elevenlabs.io" },
     { name = "Luke Harries", email = "luke@elevenlabs.io" },
 ]
-python = ">=3.11,<4.0"
 readme = "README.md"
 license = { file = "LICENSE" }
 classifiers = [

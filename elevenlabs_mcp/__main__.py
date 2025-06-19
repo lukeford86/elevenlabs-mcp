@@ -90,3 +90,10 @@ if __name__ == "__main__":
             print("Writing config to", claude_path / "claude_desktop_config.json")
             with open(claude_path / "claude_desktop_config.json", "w") as f:
                 json.dump(config, f, indent=2)
+
+if __name__ == "__main__":
+    from elevenlabs_mcp.server import app  # make sure 'app' is defined in server.py
+
+    port = int(os.environ.get("PORT", 10000))
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=port)

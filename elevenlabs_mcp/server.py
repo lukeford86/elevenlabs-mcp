@@ -33,6 +33,9 @@ from elevenlabs.types.knowledge_base_locator import KnowledgeBaseLocator
 
 from elevenlabs import play
 from elevenlabs_mcp import __version__
+from fastapi import FastAPI
+
+app = FastAPI()
 
 load_dotenv()
 api_key = os.getenv("ELEVENLABS_API_KEY")
